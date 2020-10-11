@@ -1,0 +1,9 @@
+venv
+__pycache__
+
+.env
+development.py
+package.json
+sales_monitor.py
+sales.csv
+slide.py
