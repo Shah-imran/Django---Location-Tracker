@@ -1,0 +1,45 @@
+{% extends 'location/base.html' %}
+
+{% block content %}
+<div class="container col-md-8 offset-md-2 my-5">
+    <div class="card card-body">
+        <h3 class="display-4 text-center">User Login</h3>
+        <hr>
+        <form class="user" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control form-control-user"
+                    id="username" name="username" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input type="password" name="password"
+                    class="form-control form-control-user" id="password"
+                    placeholder="Password">
+            </div>
+            <div class="form-group">
+                <div class="custom-control custom-checkbox small">
+                    <input type="checkbox" class="custom-control-input" checked
+                        name="remember_me" id="remember_me">
+                    <label class="custom-control-label" for="customCheck">Remember
+                        Me</label>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-primary btn-user btn-block"
+                value="Login">
+        </form>
+        <hr>
+        <div class="d-flex">
+            <div class="text-center">
+                <a class="card-link" href="">Forgot Password?</a>
+            </div>
+            <div class="text-center ml-auto">
+                <a class="card-link" href="{% url 'sign_up' %}">Create an Account!</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block footer_scripts %}
+
+{% endblock footer_scripts %}

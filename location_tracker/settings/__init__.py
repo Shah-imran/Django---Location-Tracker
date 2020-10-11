@@ -82,4 +82,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 
 SITENAME = "Location Tracker"
-TAGLINE = "Track your places 24x7 where you visit"
+TAGLINE = "Track your places seemlessly"
+LOGIN_URL = 'sign_in'

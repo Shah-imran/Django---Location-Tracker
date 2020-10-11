@@ -1,3 +1,10 @@
 from django.db import models
+import datetime
+from django.contrib.auth.models import User
 
-# Create your models here.
+class Location(models.Model):
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    created_time = models.DateTimeField(default=datetime.datetime.utcnow)
+
+    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
