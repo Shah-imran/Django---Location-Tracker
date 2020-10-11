@@ -84,3 +84,4 @@ STATIC_ROOT = 'static'
 SITENAME = "Location Tracker"
 TAGLINE = "Track your places seemlessly"
 LOGIN_URL = 'sign_in'
+LOGIN_REDIRECT_URL = 'dashboard'
