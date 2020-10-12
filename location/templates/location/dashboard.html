@@ -3,11 +3,74 @@
 {% block content %}
 
 {% for location in locations %}
-    <li>{{ location.latitude }} - {{ location.longitude }} {{location.uploaded_by}} {{location.created_time}}</li>
+<li>{{ location.latitude }} - {{ location.longitude }} {{location.uploaded_by}} {{location.created_time}}</li>
 {% endfor %}
+
+<div class="content-section">
+    <div id="map" style="width: 100%; height: 500px"></div>
+</div>
 
 {% endblock content %}
 
 {% block footer_scripts %}
 
+<script defer
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script>
+
+<script>
+    "use strict";
+
+    function initMap() {
+
+        const request = new XMLHttpRequest();
+        request.open('GET', '/api/locations');
+        request.send();
+
+        request.onload = () => {
+
+            const locationMarkers = []
+            const latLongs = []
+
+            let locations = JSON.parse(request.responseText)
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 18,
+                center: {
+                    lat: locations[0].latitude,
+                    lng: locations[0].longitude
+                },
+                gestureHandling: 'cooperative' // disable zooming in page scroll
+            });
+
+            locations.forEach(function (location) {
+
+                console.log(location);
+
+                const latLong = {}
+                latLong['lat'] = location.latitude
+                latLong['lng'] = location.longitude
+
+                latLongs.push(latLong)
+                console.log(latLong);
+
+                const locationMarker = new google.maps.Marker({
+                    position: latLong,
+                    map,
+                    title: new Date(location.created_time).toString(),
+                });
+
+                locationMarkers.push(locationMarker);
+            })
+
+            const locationPath = new google.maps.Polyline({
+                path: latLongs,
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+            });
+            locationPath.setMap(map);
+        }
+    }
+</script>
 {% endblock footer_scripts %}

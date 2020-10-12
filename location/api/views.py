@@ -8,29 +8,10 @@ from rest_framework.permissions import IsAuthenticated
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
-def location_list(request, username):
+def location_list(request):
 
     current_user = request.user
-
-    user = User.objects.filter(username=username).first()
-
-    if current_user == user:
-
-        locations = Location.objects.filter(uploaded_by=current_user).order_by('-created_time').all()
-        serializer = LocationSerializer(locations, many=True)
-        return Response(serializer.data)
-
-    return Response([])
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def location_create(request):
-
-    current_user = request.user
-
-    serializer = LocationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-
+    
+    locations = Location.objects.filter(uploaded_by=current_user).order_by('-created_time').all()
+    serializer = LocationSerializer(locations, many=True)
     return Response(serializer.data)

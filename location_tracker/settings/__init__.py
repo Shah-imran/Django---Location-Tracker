@@ -101,3 +101,4 @@ SITENAME = "Location Tracker"
 TAGLINE = "Track your places seemlessly"
 LOGIN_URL = 'sign_in'
 LOGIN_REDIRECT_URL = 'dashboard'
+GOOGLE_MAP_API_KEY = os.getenv('GOOGLE_MAP_API_KEY')
