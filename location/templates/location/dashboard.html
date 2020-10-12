@@ -1,21 +1,30 @@
 {% extends 'location/base.html' %}
+{% load static %}
+
+{% block header_scripts %}
+{% endblock header_scripts %}
 
 {% block content %}
-
-{% for location in locations %}
-<li>{{ location.latitude }} - {{ location.longitude }} {{location.uploaded_by}} {{location.created_time}}</li>
-{% endfor %}
+<div class="row">
+<div class="col-10">
+    <div class="form-group">
+        <input type="text" class="form-control" id="start_date">
+    </div>
+</div>
+<div class="col-2">
+    <input type="submit" value="Check" class="btn btn-primary" id="filterSubmitButton">
+</div></div>
 
 <div class="content-section">
     <div id="map" style="width: 100%; height: 500px"></div>
 </div>
-
+<div class="calendar"></div>
 {% endblock content %}
 
 {% block footer_scripts %}
 
-<script defer
-    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script>
+<!-- <script defer
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script> -->
 
 <script>
     "use strict";
