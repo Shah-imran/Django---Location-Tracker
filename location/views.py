@@ -1,8 +1,9 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from .models import *
 
 def home(request):
 	context = {
@@ -12,8 +13,13 @@ def home(request):
 
 
 def dashboard(request):
+	current_user = request.user
+	# locations = Location.objects.filter_by(uploaded_by=current_user).order_by('-created_time').all()
+	locations = Location.objects.filter(uploaded_by=current_user).order_by('-created_time').all()
+
 	context = {
-		"title": "Dashboard"
+		"title": "Dashboard",
+		"locations": locations
 	}
 	return render(request, "location/dashboard.html", context)
 

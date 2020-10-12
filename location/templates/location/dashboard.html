@@ -1,7 +1,11 @@
 {% extends 'location/base.html' %}
 
 {% block content %}
-Dashboard
+
+{% for location in locations %}
+    <li>{{ location.latitude }} - {{ location.longitude }} {{location.uploaded_by}} {{location.created_time}}</li>
+{% endfor %}
+
 {% endblock content %}
 
 {% block footer_scripts %}

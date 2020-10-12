@@ -8,3 +8,6 @@ class Location(models.Model):
     created_time = models.DateTimeField(default=datetime.datetime.utcnow)
 
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{str(self.latitude)} - {str(self.longitude)}"
