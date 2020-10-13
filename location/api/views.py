@@ -15,8 +15,10 @@ def location_list(request):
     current_user = request.user
 
     if request.method == "POST":
-        start_date = dateparser.parse(request.data['start']).replace(tzinfo=datetime.timezone.utc)
-        end_date = dateparser.parse(request.data['end']).replace(tzinfo=datetime.timezone.utc)
+        print("Request Data", request.data)
+        date_range = request.data['date_range'].split('-')
+        start_date = dateparser.parse(date_range[0]).replace(tzinfo=datetime.timezone.utc)
+        end_date = dateparser.parse(date_range[1]).replace(tzinfo=datetime.timezone.utc)
         
         locations = Location.objects.filter(
             uploaded_by=current_user.device,
@@ -25,6 +27,6 @@ def location_list(request):
     else:
         locations = Location.objects.filter(
             uploaded_by=current_user.device).order_by('-created_time').all()
-
+    print(locations.count(), "locations found")
     serializer = LocationSerializer(locations, many=True)
     return Response(serializer.data)

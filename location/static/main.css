@@ -33,3 +33,7 @@
 .dropdown-item.nav-dropdown:active {
     background-color: #024064;
 }
+
+.content-section{
+    border: 2px solid grey
+}
