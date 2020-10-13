@@ -5,15 +5,26 @@
 {% endblock header_scripts %}
 
 {% block content %}
-<div class="row">
-<div class="col-10">
-    <div class="form-group">
-        <input type="text" class="form-control" id="start_date">
+<div class="row mb-4">
+    <div class="custom-control custom-radio mx-5">
+        <input type="radio" id="today" name="dateFilterRadio" class="custom-control-input" checked>
+        <label class="custom-control-label" for="today">Today</label>
+    </div>
+    <div class="custom-control custom-radio">
+        <input type="radio" id="filter_days" name="dateFilterRadio" class="custom-control-input">
+        <label class="custom-control-label" for="filter_days">Filter Days</label>
     </div>
 </div>
-<div class="col-2">
-    <input type="submit" value="Check" class="btn btn-primary" id="filterSubmitButton">
-</div></div>
+<div class="row" id="date_filter" style="display: none;">
+    <div class="col-10">
+        <div class="form-group">
+            <input type="text" class="form-control" id="start_date">
+        </div>
+    </div>
+    <div class="col-2">
+        <input type="submit" value="Check" class="btn btn-primary" id="filterSubmitButton">
+    </div>
+</div>
 
 <div class="content-section">
     <div id="map" style="width: 100%; height: 500px"></div>
@@ -25,6 +36,13 @@
 
 <!-- <script defer
     src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script> -->
+
+<script>
+    $("input[name='dateFilterRadio']").on('change', function(){
+        $('#today').is(':checked') ? $("#date_filter").hide(): $("#date_filter").show()
+    })
+    
+</script>
 
 <script>
     "use strict";
