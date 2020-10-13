@@ -19,12 +19,12 @@ def location_list(request):
         end_date = dateparser.parse(request.data['end']).replace(tzinfo=datetime.timezone.utc)
         
         locations = Location.objects.filter(
-            uploaded_by=current_user,
+            uploaded_by=current_user.device,
             created_time__gte=start_date,
             created_time__lte=end_date).order_by('-created_time').all()
     else:
         locations = Location.objects.filter(
-            uploaded_by=current_user).order_by('-created_time').all()
+            uploaded_by=current_user.device).order_by('-created_time').all()
 
     serializer = LocationSerializer(locations, many=True)
     return Response(serializer.data)

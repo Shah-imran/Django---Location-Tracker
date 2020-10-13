@@ -15,7 +15,7 @@ def home(request):
 def dashboard(request):
 	current_user = request.user
 	# locations = Location.objects.filter_by(uploaded_by=current_user).order_by('-created_time').all()
-	locations = Location.objects.filter(uploaded_by=current_user).order_by('-created_time').all()
+	locations = Location.objects.filter(uploaded_by=current_user.device).order_by('-created_time').all()
 
 	context = {
 		"title": "Dashboard",

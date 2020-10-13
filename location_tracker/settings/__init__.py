@@ -102,3 +102,11 @@ TAGLINE = "Track your places seemlessly"
 LOGIN_URL = 'sign_in'
 LOGIN_REDIRECT_URL = 'dashboard'
 GOOGLE_MAP_API_KEY = os.getenv('GOOGLE_MAP_API_KEY')
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.environ.get("EMAIL")
+EMAIL_HOST_PASSWORD = os.environ.get("PASS")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
