@@ -6,10 +6,13 @@ from django.contrib.auth.forms import PasswordChangeForm
 from .models import *
 
 def home(request):
-	context = {
+    if not request.user.is_authenticated:
+        return redirect('sign_in')
+    return redirect('dashboard')
+	# context = {
 		
-	}
-	return render(request, "location/home.html", context)
+	# }
+	# return render(request, "location/home.html", context)
 
 
 def dashboard(request):
