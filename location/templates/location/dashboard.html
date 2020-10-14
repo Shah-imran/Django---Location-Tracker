@@ -25,7 +25,7 @@
 </div>
 
 <div class="content-section">
-    <div id="map" style="width: 100%; height: 500px"></div>
+    <div id="map" style="width: 100%; height: 600px"></div>
 </div>
 <div class="calendar"></div>
 {% endblock content %}
@@ -37,7 +37,100 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <script defer
-    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}"></script>
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script>
+
+    <script>
+        function afterRequestProcessData(request){
+
+            let locationMarkers = []
+            let latLongs = []
+            let locationPaths = []
+
+            let locations = JSON.parse(request.responseText)
+            
+            console.log(locations);
+            
+            // if no result found
+            if (locations.length < 1){
+                $("#resultNotFoundMessage").show()
+                return
+            }
+            else{
+                $("#resultNotFoundMessage").hide()
+            }
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 18,
+                center: {
+                    lat: locations[0].latitude,
+                    lng: locations[0].longitude
+                },
+                // gestureHandling: 'cooperative' // disable zooming in page scroll
+            });
+
+            const icons = {
+                start: {
+                    icon: "http://maps.google.com/mapfiles/kml/shapes/hiker.png",
+                },
+                end: {
+                    icon: "http://maps.google.com/mapfiles/kml/shapes/ranger_station.png",
+                }
+            };
+
+            locations.forEach(function (location, index) {
+
+                // console.log(location);
+
+                const latLong = {}
+                latLong['lat'] = location.latitude
+                latLong['lng'] = location.longitude
+
+                latLongs.push(latLong)
+
+                let locationMarker;
+
+                if (index == 0){
+                    locationMarker = new google.maps.Marker({
+                        position: latLong,
+                        map,
+                        icon: icons.end.icon,
+                        title: new Date(location.created_time).toString(),
+                    });
+                }
+
+                else if (index == (locations.length - 1)){
+                    locationMarker = new google.maps.Marker({
+                        position: latLong,
+                        map,
+                        icon: icons.start.icon,
+                        title: new Date(location.created_time).toString(),
+                    });
+                }
+
+                else{
+                    locationMarker = new google.maps.Marker({
+                        position: latLong,
+                        map,
+                        title: new Date(location.created_time).toString(),
+                    });
+                }
+                
+
+                locationMarkers.push(locationMarker);
+            })
+
+            const locationPath = new google.maps.Polyline({
+                path: latLongs,
+                geodesic: true,
+                strokeColor: "#FF0000",
+                strokeOpacity: 1.0,
+                strokeWeight: 2,
+            });
+            locationPath.setMap(map);
+            locationPaths.push(locationPath)
+
+        }
+    </script>
 
     <script>
         function loadTodayData(){
@@ -46,65 +139,15 @@
             request.open("GET", '/api/locations/');
             request.send();
     
-            let locationMarkers = []
-            let latLongs = []
-            let locationPaths = []
-    
             request.onload = () => {
-    
-                let locations = JSON.parse(request.responseText)
-                
-                console.log(locations);
-    
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 18,
-                    center: {
-                        lat: locations[0].latitude,
-                        lng: locations[0].longitude
-                    },
-                    // gestureHandling: 'cooperative' // disable zooming in page scroll
-                });
-    
-                locations.forEach(function (location) {
-    
-                    // console.log(location);
-    
-                    const latLong = {}
-                    latLong['lat'] = location.latitude
-                    latLong['lng'] = location.longitude
-    
-                    latLongs.push(latLong)
-                    // console.log(latLong);
-    
-                    const locationMarker = new google.maps.Marker({
-                        position: latLong,
-                        map,
-                        title: new Date(location.created_time).toString(),
-                    });
-    
-                    locationMarkers.push(locationMarker);
-                })
-    
-                const locationPath = new google.maps.Polyline({
-                    path: latLongs,
-                    geodesic: true,
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                });
-                locationPath.setMap(map);
-                locationPaths.push(locationPath)
+                afterRequestProcessData(request)
             }
         }
     </script>
     
     <script>
-        function loadRangeData(e){
+        function loadRangeData(){
 
-            let latLongs = []
-            let locationMarkers = []
-
-            e.preventDefault();
             const date_range = $("#date_range").val()
             
             const request = new XMLHttpRequest();
@@ -113,63 +156,14 @@
             request.setRequestHeader("Content-Type", "application/json");
             request.setRequestHeader("X-CSRFToken", csrf_token);
             
-
             const data = JSON.stringify({
                 date_range: date_range
             })
             
-
             request.send(data);
             
-
             request.onload = () => {
-                let locations = JSON.parse(request.responseText)
-                console.log(locations);
-
-                // if no result found
-                if (locations.length < 1){
-                    $("#resultNotFoundMessage").show()
-                    return
-                }
-                else{
-                    $("#resultNotFoundMessage").hide()
-                }
-
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 18,
-                    center: {
-                        lat: locations[0].latitude,
-                        lng: locations[0].longitude
-                    },
-                    // gestureHandling: 'cooperative' // disable zooming in page scroll
-                });
-
-
-                locations.forEach(function (location) {
-
-                    const latLong = {}
-                    latLong['lat'] = location.latitude
-                    latLong['lng'] = location.longitude
-
-                    latLongs.push(latLong)
-
-                    const locationMarker = new google.maps.Marker({
-                        position: latLong,
-                        map,
-                        title: new Date(location.created_time).toString(),
-                    });
-
-                    locationMarkers.push(locationMarker);
-                })
-
-                const locationPath = new google.maps.Polyline({
-                    path: latLongs,
-                    geodesic: true,
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 1.0,
-                    strokeWeight: 2,
-                });
-                locationPath.setMap(map);
+                afterRequestProcessData(request)
             }
 
         }
@@ -202,10 +196,10 @@
 
         $("#filterSubmitButton").on('click', (e) => {
             console.log("Filter button clicked");
-            loadRangeData(e);
+            e.preventDefault();
+            loadRangeData();
         })
 
-        initMap()
     </script>
 
 
