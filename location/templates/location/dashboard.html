@@ -21,6 +21,7 @@
         <input type="text" class="form-control" id="date_range">
     </div>
     <input type="button" value="Check" class="btn btn-primary" id="filterSubmitButton">
+    <span id="resultNotFoundMessage" style="display: none; color: red;">No data available for this date range</span>
 </div>
 
 <div class="content-section">
@@ -35,8 +36,8 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<!-- <script defer
-    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}&callback=initMap"></script> -->
+<script defer
+    src="https://maps.googleapis.com/maps/api/js?key={{GOOGLE_MAP_API_KEY}}"></script>
 
     <script>
         function loadTodayData(){
@@ -61,7 +62,7 @@
                         lat: locations[0].latitude,
                         lng: locations[0].longitude
                     },
-                    gestureHandling: 'cooperative' // disable zooming in page scroll
+                    // gestureHandling: 'cooperative' // disable zooming in page scroll
                 });
     
                 locations.forEach(function (location) {
@@ -98,71 +99,78 @@
     </script>
     
     <script>
-        function loadRangeData(){
+        function loadRangeData(e){
 
-            $("#filterSubmitButton").on('click', (e) => {
-                
-                let latLongs = []
-                let locationMarkers = []
+            let latLongs = []
+            let locationMarkers = []
 
-                e.preventDefault();
-                const date_range = $("#date_range").val()
-                
-                const request = new XMLHttpRequest();
-                request.open('POST', '/api/locations/');
-                const csrf_token = $("input[name='csrfmiddlewaretoken']").val();
-                request.setRequestHeader("Content-Type", "application/json");
-                request.setRequestHeader("X-CSRFToken", csrf_token);
-                
+            e.preventDefault();
+            const date_range = $("#date_range").val()
+            
+            const request = new XMLHttpRequest();
+            request.open('POST', '/api/locations/');
+            const csrf_token = $("input[name='csrfmiddlewaretoken']").val();
+            request.setRequestHeader("Content-Type", "application/json");
+            request.setRequestHeader("X-CSRFToken", csrf_token);
+            
 
-                const data = JSON.stringify({
-                    date_range: date_range
-                })
-                
-
-                request.send(data);
-                
-
-                request.onload = () => {
-                    let locations = JSON.parse(request.responseText)
-
-                    const map = new google.maps.Map(document.getElementById("map"), {
-                        zoom: 18,
-                        center: {
-                            lat: locations[0].latitude,
-                            lng: locations[0].longitude
-                        },
-                        gestureHandling: 'cooperative' // disable zooming in page scroll
-                    });
-
-
-                    locations.forEach(function (location) {
-
-                        const latLong = {}
-                        latLong['lat'] = location.latitude
-                        latLong['lng'] = location.longitude
-
-                        latLongs.push(latLong)
-
-                        const locationMarker = new google.maps.Marker({
-                            position: latLong,
-                            map,
-                            title: new Date(location.created_time).toString(),
-                        });
-
-                        locationMarkers.push(locationMarker);
-                    })
-
-                    const locationPath = new google.maps.Polyline({
-                        path: latLongs,
-                        geodesic: true,
-                        strokeColor: "#FF0000",
-                        strokeOpacity: 1.0,
-                        strokeWeight: 2,
-                    });
-                    locationPath.setMap(map);
-                }
+            const data = JSON.stringify({
+                date_range: date_range
             })
+            
+
+            request.send(data);
+            
+
+            request.onload = () => {
+                let locations = JSON.parse(request.responseText)
+                console.log(locations);
+
+                // if no result found
+                if (locations.length < 1){
+                    $("#resultNotFoundMessage").show()
+                    return
+                }
+                else{
+                    $("#resultNotFoundMessage").hide()
+                }
+
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 18,
+                    center: {
+                        lat: locations[0].latitude,
+                        lng: locations[0].longitude
+                    },
+                    // gestureHandling: 'cooperative' // disable zooming in page scroll
+                });
+
+
+                locations.forEach(function (location) {
+
+                    const latLong = {}
+                    latLong['lat'] = location.latitude
+                    latLong['lng'] = location.longitude
+
+                    latLongs.push(latLong)
+
+                    const locationMarker = new google.maps.Marker({
+                        position: latLong,
+                        map,
+                        title: new Date(location.created_time).toString(),
+                    });
+
+                    locationMarkers.push(locationMarker);
+                })
+
+                const locationPath = new google.maps.Polyline({
+                    path: latLongs,
+                    geodesic: true,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2,
+                });
+                locationPath.setMap(map);
+            }
 
         }
     </script>
@@ -182,15 +190,21 @@
             $("input[name='dateFilterRadio']").on('change', function(){
                 if($('#today').is(':checked')){
                     $("#date_filter").hide()
+                    $("#resultNotFoundMessage").hide()
                     loadTodayData();
                 }
                 else{
                     $("#date_filter").show()
-                    loadRangeData();
                 }
             })
 
         }
+
+        $("#filterSubmitButton").on('click', (e) => {
+            console.log("Filter button clicked");
+            loadRangeData(e);
+        })
+
         initMap()
     </script>
 

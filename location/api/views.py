@@ -56,6 +56,11 @@ def location_create(request):
         uploaded_by=current_user.device
     )
 
+    if 'date_time' in request_data:
+        print(dateparser.parse(request_data['date_time']))
+        location.created_time = dateparser.parse(request_data['date_time'])
+        location.save()
+
     print("location saved")
     serializer = LocationSerializer(location)
     return Response(serializer.data)
