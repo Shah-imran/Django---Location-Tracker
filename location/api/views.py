@@ -56,6 +56,6 @@ def location_create(request):
         uploaded_by=current_user.device
     )
 
-    print("locations saved")
+    print("location saved")
     serializer = LocationSerializer(location)
     return Response(serializer.data)
