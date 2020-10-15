@@ -1,7 +1,6 @@
 from datetime import timedelta
 import random
 import requests
-from threading import Thread
 import datetime
 
 user_token = "4cd8d412a77049066ea2ae98fd33d509a761035b"
@@ -15,7 +14,7 @@ def my_task():
 
     print(latitude, longitude)
 
-    datetime_post = datetime.datetime.today() - timedelta(days=random.randint(3,4))
+    datetime_post = datetime.datetime.now()
 
     post_data = {
         "latitude": latitude,
@@ -34,6 +33,4 @@ def my_task():
     print(response)
 
 for i in range(20):
-    th = Thread(target=my_task)
-    th.start()
-    # my_task()
+    my_task()
