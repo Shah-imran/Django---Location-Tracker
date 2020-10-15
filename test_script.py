@@ -1,7 +1,7 @@
-from datetime import timedelta
 import random
 import requests
 import datetime
+import time
 
 user_token = "4cd8d412a77049066ea2ae98fd33d509a761035b"
 headers = {
@@ -23,7 +23,7 @@ def my_task():
     }
 
     request = requests.post(
-        "http://localhost:8000/api/locations/create/",
+        "http://farhad.pythonanywhere.com/api/locations/create/",
         data=post_data,
         headers=headers
     )
@@ -34,3 +34,4 @@ def my_task():
 
 for i in range(20):
     my_task()
+    time.sleep(60)
