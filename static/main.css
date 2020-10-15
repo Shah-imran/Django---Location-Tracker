@@ -1,0 +1,39 @@
+.top-navbar {
+    background-color: #024064;
+}
+
+.tagline {
+    color: rgb(243, 237, 237);
+}
+
+.code-submit {
+    padding-left: 20px;
+    padding-right: 20px;
+    background-color: #024064;
+}
+
+.code-submit:hover {
+    background-color: #1b6b99;
+}
+
+.card.card-header.shared-snippet-title{
+    background-color: #024064;
+    color: #fff;
+}
+
+.card.card-header.shared-snippet-title:hover{
+    background-color: #115e8a;
+    color: #fff;
+}
+
+.nav-item .nav-link {
+    color: #fff !important;
+}
+
+.dropdown-item.nav-dropdown:active {
+    background-color: #024064;
+}
+
+.content-section{
+    border: 2px solid grey
+}

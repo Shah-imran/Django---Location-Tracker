@@ -28,7 +28,7 @@ def dashboard(request):
 
 
 def sign_up(request):
-	messages.info(request, "Sorry, User registration is currently not available!")
+	messages.warning(request, "Sorry, User registration is currently not available!")
 	return redirect('sign_in')
 
 
